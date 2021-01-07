@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
 
   def my_portfolio
+    @user = current_user
     @tracked_stocks = current_user.stocks
   end
 
   def my_friends
-    @user = current_user
     @friends = current_user.friends
   end
 
@@ -16,10 +16,9 @@ class UsersController < ApplicationController
 
   def search
     if params[:friend].present?
-      @friend = params[:friend]
       @friends = User.search(params[:friend])
       @friends = current_user.except_current_user(@friends)
-      if @friends
+      if @friends.count > 0
         respond_to do |format|
           format.js { render partial: 'users/friend_result' }
         end
